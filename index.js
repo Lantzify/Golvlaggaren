@@ -14,12 +14,16 @@ client.on("message", message => {
     const user = getUserFromMention(message.content);
 
 
+
     if(command === "golv"){
         message.react("768160415150112797");
         message.channel.send("", {files: ["https://media1.tenor.com/images/2eb0cad8576bab400181013595e90bbd/tenor.gif?itemid=4756231"]})
     }
 
-
+    if(message.content.indexOf("<:Golvleggaren:768160415150112797>") !== -1) {
+        message.react("768160415150112797");
+        message.channel.send("Jag lägger golv!");
+    }
 });
 
 function getUserFromMention(mention) {
