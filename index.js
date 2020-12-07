@@ -1,8 +1,18 @@
 require('dotenv').config();
 
+const PORT = process.env.PORT || 5000;
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const prefix = "!";
+
+
+var http = require('http');
+ var fs = require('fs');
+ var path = require('path');
+
+ http.createServer(function (request, response) {
+
+ }).listen(PORT);
 
 client.login(process.env.CLIENT_SECERECT);
 
@@ -13,7 +23,17 @@ client.on("message", message => {
     
     const user = getUserFromMention(message.content);
 
+    console.log(message)
 
+
+    if(user) {
+        message.react("768160415150112797");
+        return message.channel.send(`<@${user.id}> lägger golv`);
+    }
+
+    if(command === "tak"){
+        console.log(user)
+    }
 
     if(command === "golv"){
         message.react("768160415150112797");
