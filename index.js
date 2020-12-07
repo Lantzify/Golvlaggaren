@@ -20,17 +20,15 @@ client.on("message", message => {
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
-    
-    const user = getUserFromMention(message.content);
 
+  /*  
+   const user = getUserFromMention(message.content);
     console.log(message)
-
-
-    if(user) {
+  if(user) {
         message.react("768160415150112797");
         return message.channel.send(`<@${user.id}> lägger golv`);
     }
-
+*/
     if(command === "tak"){
         console.log(user)
     }
