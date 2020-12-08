@@ -1,59 +1,81 @@
 require('dotenv').config();
 
+//For Heroku
+//TODO: Test if the port varible only needed
 const PORT = process.env.PORT || 5000;
+/*import { createServer } from 'http';
+ createServer(function () {
+ }).listen(PORT); */
+
+//Discord
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const prefix = "!";
 
+//Commands
+const commands = {
+    "!golv-help": "Get golv",
+    "!golv": "Gets a floor gif",
+    "!tak": "Gets a roof gif",
+    "": ""
+};
 
-var http = require('http');
- var fs = require('fs');
- var path = require('path');
+//Nicknames
+//TODO - Add all user Ids
+const nickNames = {
+    "lantz": "<@242377088391315457>",
+    "hassel": "<@109946837850419200>",
+    "jeppe": "<@109939339575717888>",
+    "vera": "<@125277055066701824>",
+    "c": "<@>",
+    "lukas": "<@>",
+    "tim": "<@>",
+    "andre": "<@>"
+};
 
- http.createServer(function (request, response) {
+const floorTriggers = ["sämst", "dålig", "kass", "sist"];
 
- }).listen(PORT);
+/*----- Bot begin -----*/
 
+//Login
 client.login(process.env.CLIENT_SECERECT);
 
+//TODO - Grab all user Ids
+client.once("ready", () => {
+    console.log(client.users.cache)
+});
+
+//On message
 client.on("message", message => {
+    const messageArray = message.content.toLowerCase().split(/ +/);
 
-    const args = message.content.slice(prefix.length).trim().split(/ +/);
-    const command = args.shift().toLowerCase();
+    //Check if message contains loser & tags user as a 
+    floorTriggers.forEach(word =>{
+        if(messageArray.includes(word)){
+            for(const key in nickNames){
+                if(messageArray.includes(key)){
+                    message.react("768160415150112797");
+                    return message.channel.send(`${nickNames[key]} lägger golv!`);
+                }
+            }
+        }
+    });
 
-  /*  
-   const user = getUserFromMention(message.content);
-    console.log(message)
-  if(user) {
+    if(messageArray.includes("golv-help")) {
+        //TODO - Add help message
+    }
+
+    if(messageArray.includes("tak")) {
+         //TODO - Add roof message
+    }
+
+    if(messageArray.includes("golv")) {
         message.react("768160415150112797");
-        return message.channel.send(`<@${user.id}> lägger golv`);
-    }
-*/
-    if(command === "tak"){
-        console.log(user)
+        message.channel.send("", {files: ["https://media1.tenor.com/images/2eb0cad8576bab400181013595e90bbd/tenor.gif?itemid=4756231"]});
     }
 
-    if(command === "golv"){
-        message.react("768160415150112797");
-        message.channel.send("", {files: ["https://media1.tenor.com/images/2eb0cad8576bab400181013595e90bbd/tenor.gif?itemid=4756231"]})
-    }
-
-    if(message.content.indexOf("<:Golvleggaren:768160415150112797>") !== -1) {
+    if(messageArray.includes("<:Golvleggaren:768160415150112797>")) {
         message.react("768160415150112797");
         message.channel.send("Jag lägger golv!");
     }
 });
-
-function getUserFromMention(mention) {
-	if (!mention) return;
-
-	if (mention.startsWith('<@') && mention.endsWith('>')) {
-		mention = mention.slice(2, -1);
-
-		if (mention.startsWith('!')) {
-			mention = mention.slice(1);
-		}
-
-		return client.users.cache.get(mention);
-	}
-}
