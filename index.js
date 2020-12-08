@@ -80,6 +80,8 @@ client.on("message", message => {
 
 
 /* KEEP ALIVE */
+http.createServer(function (request, response) {}).listen(PORT);
+
 const startKeepAlive = () => {
     setInterval(function() {
         var options = {

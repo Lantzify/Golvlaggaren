@@ -4,7 +4,8 @@
   "description": "A discord bot so butiful, it makes one cry",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "deploy": "git push heroku master"
   },
   "author": "Lantzify",
   "license": "ISC",
