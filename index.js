@@ -3,12 +3,10 @@ require('dotenv').config();
 //For Heroku
 //TODO: Test if the port varible only needed
 const PORT = process.env.PORT || 5000;
-/*import { createServer } from 'http';
- createServer(function () {
- }).listen(PORT); */
-
+const http = require("http");
+ 
 //Discord
-const Discord = require('discord.js');
+const Discord = require("discord.js");
 const client = new Discord.Client();
 const prefix = "!";
 
@@ -79,3 +77,29 @@ client.on("message", message => {
         message.channel.send("Jag lägger golv!");
     }
 });
+
+
+/* KEEP ALIVE */
+const startKeepAlive = () => {
+    setInterval(function() {
+        var options = {
+            host: 'https://golvlaggaren.herokuapp.com/',
+            port: PORT,
+            path: '/'
+        };
+        http.get(options, function(res) {
+            res.on('data', function(chunk) {
+                try {
+                    // optional logging... disable after it's working
+                    console.log("HEROKU RESPONSE: " + chunk);
+                } catch (err) {
+                    console.log(err.message);
+                }
+            });
+        }).on('error', function(err) {
+            console.log("Error: " + err.message);
+        });
+    }, 20 * 60 * 1000); // load every 20 minutes
+}
+
+startKeepAlive();
