@@ -1,13 +1,17 @@
-require('dotenv').config();
+//Dotenv
+import dotenv from "dotenv";
+dotenv.config();
 
 //For Heroku
-//TODO: Test if the port varible only needed
 const PORT = process.env.PORT || 5000;
-const http = require("http");
+import http from "http";
  
 //Discord
-const Discord = require("discord.js");
-const client = new Discord.Client();
+import { Client } from "discord.js";
+const client = new Client();
+
+//Users
+import { users } from "./users.js";
 
 //Commands
 const commands = {
@@ -17,41 +21,6 @@ const commands = {
     "": ""
 };
 
-//Nicknames
-const nicknames = [
-{
-    Name: ["lantz", "jojo"],
-    Id:  "<@242377088391315457>",
-},
-{
-  Name: ["hassel", "tönt"],
-  Id: "<@109946837850419200>"
-},
-{
-    Name: ["jeppe", "måsen"],
-    Id: "<@109939339575717888>"
-},
-{
-    Name: ["vera", "loremaster"],
-    Id:  "<@125277055066701824>"
-},
-{
-    Name: ["lukas", "volvopojken"],
-    Id:  "<@109442142849486848>"
-},
-{
-    Name: ["tim", "kuken"],
-    Id:  "<@110048899804184576>"
-},
-{
-    Name: ["c"],
-    Id:  "<@146693111358160898>"
-},
-{
-    Name: ["andre", "simp"],
-    Id:  "<@110494198699945984>"
-}];
-
 const floorTriggers = ["sämst", "dålig", "kass", "sist", "suger"];
 
 /*----- Bot begin -----*/
@@ -59,21 +28,16 @@ const floorTriggers = ["sämst", "dålig", "kass", "sist", "suger"];
 //Login
 client.login(process.env.CLIENT_SECERECT);
 
-//TODO - Grab all user Ids
-client.once("ready", () => {
-    console.log(client.users.cache)
-});
-
 //On message
 client.on("message", message => {
     const messageArray = message.content.toLowerCase().split(/ +/);
 
     //Check if message contains loser & tags user as a 
     if(messageArray.some(word => floorTriggers.includes(word) && messageArray.length > 1)) {
-        const userToMention = nicknames.find(nickname => messageArray.find(msg => nickname.Name.includes(msg)));
+        const userToMention = users.find(user => messageArray.find(msg => user.Name.includes(msg)));
 
         if(userToMention.Name.includes("lantz")) {
-            return message.channel.send(`Bra försök <@${message.author.id}>! Lantz lägger tak!`);
+            return message.channel.send(`Bra försök <@${message.author.id}>! Men Lantz lägger tak!`);
         } else if(userToMention !== "undefined") {
             message.react("768160415150112797");
             return message.channel.send(`${userToMention.Id} lägger golv!`);
