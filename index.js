@@ -5,20 +5,26 @@ dotenv.config();
 //For Heroku
 const PORT = process.env.PORT || 5000;
 import http from "http";
- 
+
+
+
 //Discord
 import { Client } from "discord.js";
 const client = new Client();
+
+//Music
+import ytdl from 'ytdl-core';
 
 //Users
 import { users } from "./users.js";
 
 //Commands
 const commands = {
-    "!golv-help": "Get golv",
-    "!golv": "Gets a floor gif",
-    "!tak": "Gets a roof gif",
-    "": ""
+    "!golv-help": "Gets a golv.",
+    "!gp <youtube url>": "Plays a youtube url.",
+    "!gps": "Stops current song.", 
+    "!golv": "Gets a floor gif.",
+    "!tak": "Bruh..."
 };
 
 const floorTriggers = ["sämst", "dålig", "kass", "sist", "suger"];
@@ -28,8 +34,13 @@ const floorTriggers = ["sämst", "dålig", "kass", "sist", "suger"];
 //Login
 client.login(process.env.CLIENT_SECERECT);
 
+//Set status
+client.once("ready", () => {
+	client.user.setPresence({ activity: { name: "!golv-help" }, status: "online" });
+});
+
 //On message
-client.on("message", message => {
+client.on("message", async message => {
     const messageArray = message.content.toLowerCase().split(/ +/);
 
     //Check if message contains loser & tags user as a 
@@ -44,15 +55,45 @@ client.on("message", message => {
         }
     }
 
+    //Help command
+    if(messageArray.includes("!golv-help")) {
+        let helpmsg = "";
+        for(const cmd in commands){
+            helpmsg += cmd + ": " + commands[cmd] + "\n";
+        }
+
+        return message.channel.send(helpmsg);
+    }
+
+    //Play music
+    if(messageArray.includes("!gp")) {
+        const youtubeUrl = message.content.split(/ +/);
+        const url = youtubeUrl.find(msg => msg.includes("https"));
+
+        if(url !== "undefiend") {
+           message.member.voice.channel.join().then(connection => {
+                const stream = ytdl(url, { filter: "audioonly", quality: "lowest" })
+                const dispatcher = connection.play(stream);
+                
+                dispatcher.on("finish", () => message.member.voice.channel.leave());
+            });
+        }
+    }
 
     //TODO - fix
-    if(messageArray.includes("!golv-help")) {
-        //TODO - Add help message
+    //Stop music
+    if(messageArray.includes("!gps")) {
+
     }
 
     //TODO - fix
     if(messageArray.includes("!tak")) {
-         //TODO - Add roof message
+        message.member.voice.channel.join().then(connection => {
+            const stream = ytdl('https://www.youtube.com/watch?v=YEc7tOytuxk', { filter: "audioonly", quality: "lowest" })
+            const dispatcher = connection.play(stream);
+            
+            dispatcher.on('finish', () => message.member.voice.channel.leave());
+        })
     }
 
     //TODO - fix
